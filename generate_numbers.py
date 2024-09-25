@@ -1,9 +1,14 @@
 import random
+import os
 
-def generate_numbers_file(filename, num_numbers, min_value, max_value):
-    """Generates a file with random numbers."""
-    with open(filename, "w") as f:
-        for _ in range(num_numbers):
-            number = random.randint(min_value, max_value)
-            f.write(f"{number}\n")
-    print(f"File '{filename}' with {num_numbers} random numbers generated.")
+def generate_numbers_file(filename, count=10000):
+    """Generate a file with large random numbers."""
+    with open(filename, 'w') as f:
+        for _ in range(count):
+            f.write(f"{random.randint(10**5, 10**7)}\n")
+    print("File generated successfully:", filename)
+
+if __name__ == "__main__":
+    print("Current working directory:", os.getcwd())
+    generate_numbers_file("numbers.txt")
+

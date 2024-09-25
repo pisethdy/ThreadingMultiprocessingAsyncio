@@ -1,30 +1,33 @@
-import multiprocessing_task
 import threading_task
+import multiprocessing_task
 import async_task
+import asyncio
 import generate_numbers
 
-def main():
-    # Step 1: Generate numbers file
-    print("Generating numbers.txt file...")
-    generate_numbers.generate_numbers_file("numbers.txt", 10000, 100000, 1000000)
-    
-    # Step 2: Read numbers from file
-    with open("numbers.txt", "r") as f:
-        numbers = [int(line.strip()) for line in f.readlines()]
-
-    # Step 3: Run multiprocessing task to find primes
-    print("Running multiprocessing task...")
-    primes = multiprocessing_task.find_primes_in_range(numbers, chunk_size=len(numbers)//multiprocessing.cpu_count())
-    print(f"Prime numbers found: {primes}")
-
-    # Step 4: Run threading task to simulate I/O
-    print("Running threading I/O tasks...")
-    threading_task.run_io_tasks()
-
-    # Step 5: Run async tasks
-    print("Running async I/O tasks...")
-    import asyncio
-    asyncio.run(async_task.run_async_tasks())
+def read_numbers_file(filename):
+    """Read numbers from file."""
+    with open(filename, 'r') as f:
+        return [int(line.strip()) for line in f]
 
 if __name__ == "__main__":
-    main()
+    # Generate the numbers file before reading
+    print("Generating numbers.txt file...")
+    generate_numbers.generate_numbers_file("numbers.txt")  # Call to generate the file
+
+    # Part 1: Multiprocessing - Prime number calculation
+    print("Reading numbers from file...")
+    numbers = read_numbers_file('numbers.txt')
+    
+    print("Processing numbers with multiprocessing...")
+    prime_numbers = multiprocessing_task.process_file_multiprocessing(numbers)
+
+    # Part 2: Threading - Simulate file downloads
+    file_urls = ["file1.txt", "file2.txt", "file3.txt"]
+    print("Simulating file downloads with threading...")
+    threading_task.download_files_with_threads(file_urls)
+    
+    # Part 3: Async IO - Write prime numbers asynchronously
+    print("Writing prime numbers to files asynchronously...")
+    asyncio.run(async_task.write_primes_async(prime_numbers))
+
+    print("All tasks completed successfully!")
